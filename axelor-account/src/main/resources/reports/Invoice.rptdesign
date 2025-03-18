@@ -3989,65 +3989,6 @@ where Invoice.id = ? AND InvoicePayment.status_select=1;]]></xml-property>
                             <property name="borderRightStyle">none</property>
                             <property name="borderTopStyle">none</property>
                             <property name="verticalAlign">top</property>
-                            <text id="5233">
-                                <property name="fontSize">xx-small</property>
-                                <property name="textAlign">center</property>
-                                <property name="dataSet">TranslateDS</property>
-                                <list-property name="paramBindings">
-                                    <structure>
-                                        <property name="paramName">param_1</property>
-                                        <simple-property-list name="expression">
-                                            <value type="javascript">if (row["status_select"] == "1") {
-	'Invoice.draftInvoiceNo'
-} else if(row["status_select"] == "2") {
-	if (row["operation_type_select"] == "1" &amp;&amp; row["operation_sub_type_select"] == "2") {
-		'Invoice.purchaseInvoiceAdvPaymentNo'
-	} else if (row["operation_type_select"] == "3" &amp;&amp; row["operation_sub_type_select"] == "2") {
-		'Invoice.invoiceAdvPaymentNo'
-	} else {
-		'Invoice.draftInvoiceNo'
-	}
-} else if(row["status_select"] == "3") {
-	if (row["operation_type_select"] == "1") {
-		if (row["operation_sub_type_select"] == "3") {
-			'Invoice.purchaseInvoiceBalanceNo'
-		} else {
-			'Invoice.purchaseInvoiceNo'
-		}
-	} else if (row["operation_type_select"] == "2") {
-		'Invoice.purchaseRefundNo'
-	} else if (row["operation_type_select"] == "3") {
-		if (row["operation_sub_type_select"] == "3") {
-			'Invoice.invoiceBalanceNo'
-		} else {
-			'Invoice.invoiceNo'
-		}
-	} else if (row["operation_type_select"] == "4") {
-		'Invoice.refundNo'
-	}
-} else if(row["status_select"] == "4") {
-	'Invoice.cancelInvoiceNo'
-}</value>
-                                        </simple-property-list>
-                                    </structure>
-                                </list-property>
-                                <list-property name="boundDataColumns">
-                                    <structure>
-                                        <property name="name">key</property>
-                                        <text-property name="displayName">key</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                        <property name="dataType">string</property>
-                                    </structure>
-                                    <structure>
-                                        <property name="name">translation</property>
-                                        <text-property name="displayName">translation</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                        <property name="dataType">string</property>
-                                    </structure>
-                                </list-property>
-                                <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> <VALUE-OF>row._outer["invoice_id"]</VALUE-OF>]]></text-property>
-                            </text>
                         </cell>
                     </row>
                 </grid>
@@ -4584,7 +4525,7 @@ where Invoice.id = ? AND InvoicePayment.status_select=1;]]></xml-property>
                     <property name="borderTopWidth">thin</property>
                     <property name="paddingLeft">6pt</property>
                     <text id="3423">
-                        <property name="fontWeight">bold</property>
+                        <property name="fontWeight">normal</property>
                         <property name="dataSet">TranslateDS</property>
                         <list-property name="paramBindings">
                             <structure>
@@ -4640,7 +4581,10 @@ where Invoice.id = ? AND InvoicePayment.status_select=1;]]></xml-property>
                         </list-property>
                         <structure name="toc"/>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF><VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>row._outer["invoice_id"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<b>Z Dental</b><br/>
+3280 N Colorado St <br/>
+Chandler, AZ 85225 <br/>
+Phone: 888-228-7706]]></text-property>
                     </text>
                 </cell>
                 <cell id="3366"/>
