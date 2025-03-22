@@ -3865,8 +3865,8 @@ where Invoice.id = ? AND InvoicePayment.status_select=1;]]></xml-property>
                     <row id="5988">
                         <cell id="5989">
                             <image id="5996">
-                                <property name="height">0.7691549295774648cm</property>
-                                <property name="width">2.772535211267606cm</property>
+                                <property name="height">1.377323943661972cm</property>
+                                <property name="width">4.328732394366197cm</property>
                                 <property name="source">embed</property>
                                 <property name="imageName">zds_img.png</property>
                             </image>
@@ -5001,12 +5001,6 @@ else {
                                 <text id="5616">
                                     <property name="marginLeft">2pt</property>
                                     <property name="dataSet">TranslateDS</property>
-                                    <list-property name="visibility">
-                                        <structure>
-                                            <property name="format">all</property>
-                                            <expression name="valueExpr" type="javascript">row._outer["displayHeadOfficeAddress"] != true || row._outer["head_office_address"] == null</expression>
-                                        </structure>
-                                    </list-property>
                                     <list-property name="paramBindings">
                                         <structure>
                                             <property name="paramName">param_1</property>
@@ -5030,7 +5024,7 @@ else {
                                         </structure>
                                     </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> : <VALUE-OF>row._outer["head_office_address"]</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[Email : orders@zdental.com]]></text-property>
                                 </text>
                             </cell>
                         </row>

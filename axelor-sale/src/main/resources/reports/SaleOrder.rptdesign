@@ -1438,7 +1438,9 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select SaleOrder.id, SaleOrder.sale_order_seq as "saleOrderSeq", SaleOrder.creation_date as "CreationDate", 
-CONCAT(SalemanPartner.name, ' ', SalemanPartner.first_name) as "SalemanName", SalemanPartner.fixed_phone as "SalemanPhone", 
+---CONCAT(SalemanPartner.name, ', ', SalemanPartner.first_name) as "SalemanName", 
+SalespersonUser.name as "SalemanName", 
+SalemanPartner.fixed_phone as "SalemanPhone", 
 SalemanEmailAddress.address as "SalemanEmail", SaleConfig.display_saleman_on_printing as "DisplaySaleman", 
 SaleOrder.shipment_date as "ShipmentDate", SaleConfig.sale_order_client_box as "ClientBox", 
 SaleOrder.total_shipping_cost as "ShippingCost",
@@ -3533,12 +3535,6 @@ this.height = row["logo_height"];]]></method>
                                     <property name="fontSize">9pt</property>
                                     <property name="marginLeft">2pt</property>
                                     <property name="dataSet">TranslateDS</property>
-                                    <list-property name="visibility">
-                                        <structure>
-                                            <property name="format">all</property>
-                                            <expression name="valueExpr" type="javascript">row._outer["DisplaySaleman"] == 0</expression>
-                                        </structure>
-                                    </list-property>
                                     <list-property name="paramBindings">
                                         <structure>
                                             <property name="paramName">param_1</property>
@@ -3562,7 +3558,7 @@ this.height = row["logo_height"];]]></method>
                                         </structure>
                                     </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> : <VALUE-OF>row._outer["SalemanEmail"]</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> : orders@zdental.com]]></text-property>
                                 </text>
                             </cell>
                         </row>
