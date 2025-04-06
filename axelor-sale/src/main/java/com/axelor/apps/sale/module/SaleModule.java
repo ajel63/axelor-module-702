@@ -45,6 +45,8 @@ import com.axelor.apps.sale.service.ProductCategorySaleService;
 import com.axelor.apps.sale.service.ProductCategoryServiceSaleImpl;
 import com.axelor.apps.sale.service.PurchaseLableService;
 import com.axelor.apps.sale.service.PurchaseLableServiceImpl;
+import com.axelor.apps.sale.service.SaleDashboardService;
+import com.axelor.apps.sale.service.SaleDashboardServiceImpl;
 import com.axelor.apps.sale.service.SaleOrderDomainService;
 import com.axelor.apps.sale.service.SaleOrderDomainServiceImpl;
 import com.axelor.apps.sale.service.SaleOrderLineSaleRepository;
@@ -126,5 +128,6 @@ public class SaleModule extends AxelorModule {
     bind(StripePaymentService.class).to(StripePaymentServiceImpl.class);
     bind(PurchaseLableService.class).to(PurchaseLableServiceImpl.class);
     bind(WoocomService.class).to(WoocomServiceImpl.class);
+    bind(SaleDashboardService.class).to(SaleDashboardServiceImpl.class);
   }
 }

@@ -62,9 +62,7 @@
       </menu>
     </menubar>
     <hilite background="warning"
-      if="(endOfValidityDate != null) &amp;&amp; ($moment(endOfValidityDate) &lt; $moment(todayDate)) &amp;&amp; (statusSelect == 3)"/>
-    <hilite background="danger"
-      if="(endOfValidityDate != null) &amp;&amp; ($moment(endOfValidityDate) &lt; $moment(todayDate)) &amp;&amp; (statusSelect == 2)"/>
+      if="(saleOrderSeq != null) &amp;&amp; (stripePaidAmount &lt; inTaxTotal)"/>
     <field name="endOfValidityDate" hidden="true"/>
     <field name="saleOrderSeq" width="120"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
@@ -77,6 +75,7 @@
     <field name="confirmationDateTime"/>
     <field name="exTaxTotal" aggregate="sum"/>
     <field name="inTaxTotal" aggregate="sum"/>
+    <field name="stripePaidAmount"/>
     <field name="amountInvoiced" hidden="true" aggregate="sum"
       if="__config__.app.isApp('supplychain')"/>
     <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
@@ -87,6 +86,9 @@
       onClick="action-sale-order-method-show-sale-order"/>
     <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
       onClick="action-send-by-email-with-template"/>
+    <field name="woocommerceOrderLink"/>
+    <field name="soNum"/>
+    <field name="stripePaidAmount" hidden="true"/>
   </grid>
 
   <grid name="sale-order-partner-grid" title="Sale orders"

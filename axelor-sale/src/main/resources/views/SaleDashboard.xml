@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="sale-dashboard-grid" title="SaleDashboard"
+    model="com.axelor.apps.sale.db.SaleDashboard">
+    <field name="name"/>
+    <field name="company"/>
+    <field name="customer"/>
+  </grid>
+
+  <form name="sale-dashboard-form" title="SaleDashboard" width="large"
+    onLoad="action-sale-dash-board-method-calculation-of-sale"
+    model="com.axelor.apps.sale.db.SaleDashboard" onNew="action-sale-dash-board-method-on-new,save">
+    <panel name="mainPanel">
+      <spacer colSpan="2"/>
+      <field name="name" colSpan="2"/>
+      <spacer colSpan="1"/>
+      <field name="customer" colSpan="2"
+        onChange="action-sale-dash-board-method-calculation-of-sale,save"/>
+      <spacer colSpan="1"/>
+      <field name="company" colSpan="2"/>
+      <spacer colSpan="2"/>
+
+      <spacer colSpan="2"/>
+      <field name="dateSelection" colSpan="2"
+        onChange="action-sale-dash-board-method-on-change-date-section,action-sale-dash-board-method-calculation-of-sale,save"/>
+      <spacer colSpan="1"/>
+      <field name="startDate" colSpan="2"
+        onChange="action-sale-dash-board-method-calculation-of-sale,save"/>
+      <spacer colSpan="1"/>
+      <field name="endDate" colSpan="2"
+        onChange="action-sale-dash-board-method-calculation-of-sale,save"/>
+      <spacer colSpan="2"/>
+    </panel>
+
+    <panel>
+      <spacer colSpan="2"/>
+      <button name="$totalAmountWt" title="Total Sale without Tax" colSpan="2"
+        icon="fa-line-chart" onClick="" widget="info-button"/>
+      <spacer colSpan="1"/>
+      <button name="$zdsTotalAmountWt" title="ZDS Sale without Tax" colSpan="2"
+        icon="fa-line-chart" onClick="" widget="info-button"/>
+      <spacer colSpan="1"/>
+      <button name="$wooTotalAmountWt" title="Woocom Sale without Tax" colSpan="2"
+        icon="fa-line-chart" onClick="" widget="info-button"/>
+      <spacer colSpan="2"/>
+
+      <spacer colSpan="2"/>
+      <button name="$totalSaleTax" title="Total Sale Tax" colSpan="2" icon="fa-calculator"
+        onClick="" widget="info-button"/>
+      <spacer colSpan="1"/>
+      <button name="$zdsSaleTax" title="ZDS Sale Tax" colSpan="2" icon="fa-calculator"
+        onClick="" widget="info-button"/>
+      <spacer colSpan="1"/>
+      <button name="$wooSaleTax" title="Woocom Sale Tax" colSpan="2" icon="fa-calculator"
+        onClick="" widget="info-button"/>
+      <spacer colSpan="2"/>
+
+      <spacer colSpan="2"/>
+      <button name="$totalShippingCost" title="Total Shipment Cost" colSpan="2"
+        icon="fa-shopping-cart" onClick="" widget="info-button"/>
+      <spacer colSpan="1"/>
+      <button name="$zdsShippingCost" title="ZDS Shipment Cost" colSpan="2"
+        icon="fa-shopping-cart" onClick="" widget="info-button"/>
+      <spacer colSpan="1"/>
+      <button name="$wooShippingCost" title="Woocom Shipment Cost" colSpan="2"
+        icon="fa-shopping-cart" onClick="" widget="info-button"/>
+      <spacer colSpan="2"/>
+
+      <spacer colSpan="2"/>
+      <button name="$totalAmount" title="Total Sale" colSpan="2" icon="fa-comment-dollar"
+        css="btn-success" onClick="" widget="info-button"/>
+      <spacer colSpan="1"/>
+      <button name="$zdsTotalAmount" title="ZDS Sale" colSpan="2" icon="fa-comment-dollar"
+        css="btn-success" onClick="" widget="info-button"/>
+      <spacer colSpan="1"/>
+      <button name="$wooTotalAmount" title="Woocom Sale" colSpan="2" css="btn-success"
+        icon="fa-comment-dollar" onClick="" widget="info-button"/>
+      <spacer colSpan="2"/>
+
+      <spacer colSpan="2"/>
+      <button name="$totalAmountRemaining" title="Total Sale Remaining" colSpan="2"
+        icon="fa-comment-dollar" css="btn-danger" onClick="" widget="info-button"/>
+      <spacer colSpan="1"/>
+      <button name="$zdsTotalAmountRemaining" title="ZDS Sale Remaining" colSpan="2"
+        icon="fa-comment-dollar" css="btn-danger" onClick="" widget="info-button"/>
+      <spacer colSpan="1"/>
+      <button name="$wooTotalAmountRemaining" title="Woocom Sale Remaining" colSpan="2"
+        css="btn-danger" icon="fa-comment-dollar" onClick="" widget="info-button"/>
+      <spacer colSpan="2"/>
+
+    </panel>
+
+    <panel-dashlet name="partnerSaleOrderPanel" colSpan="12" canSearch="true"
+      action="action-sale-order-partner-view-sales-orders" title="Sales orders"/>
+
+  </form>
+
+  <action-record name="action-sale-dash-board-attrs-on-load"
+    model="com.axelor.apps.sale.db.SaleDashboard">
+    <field name="$totalAmount"
+      expr="call:com.axelor.apps.sale.service.SaleDashboardService:getTotalInTaxTotal(id, null,null)"/>
+    <field name="$zdsTotalAmount"
+      expr="call:com.axelor.apps.sale.service.SaleDashboardService:getZdsTotalInTaxTotal(id, null,null)"/>
+    <field name="$wooTotalAmount"
+      expr="call:com.axelor.apps.sale.service.SaleDashboardService:getWooTotalInTaxTotal(id, null,null)"/>
+  </action-record>
+
+  <action-method name="action-sale-dash-board-method-calculation-of-sale">
+    <call class="com.axelor.apps.sale.web.SaleDashboardController" method="onChangeCustomer"/>
+  </action-method>
+
+  <action-method name="action-sale-dash-board-method-on-new">
+    <call class="com.axelor.apps.sale.web.SaleDashboardController" method="setDashbordName"/>
+  </action-method>
+
+  <action-method name="action-sale-dash-board-method-on-change-date-section">
+    <call class="com.axelor.apps.sale.web.SaleDashboardController" method="setDateRange"/>
+  </action-method>
+
+  <action-view name="action-sale-order-partner-view-sales-orders" title="Sales orders"
+    model="com.axelor.apps.sale.db.SaleOrder">
+    <view type="grid" name="sale-order-grid"/>
+    <view type="form" name="sale-order-form"/>
+    <domain>(self.clientPartner = :customerId OR self.contactPartner = :customerId) AND
+      self.creationDate &gt; :startDate AND self.creationDate &lt; :endDate</domain>
+    <context name="customerId"
+      expr="call:com.axelor.apps.sale.service.SaleDashboardService:getWooTotalInTaxTotal(id, null,null)"/>
+  </action-view>
+
+</object-views>

@@ -160,6 +160,16 @@
     <context name="status" expr="eval: [1,2,3,4,5]"/>
   </action-view>
 
+  <menuitem title="ZDS Dashboard" name="sc-root-sale-dash-board-zds" parent="sc-root-sale"
+    order="1105" action="sc.sale.zds.dash.board"/>
+
+  <action-view name="sc.sale.zds.dash.board" title="ZDS Dashboard"
+    model="com.axelor.apps.sale.db.SaleDashboard">
+    <view type="grid" name="sale-dashboard-grid"/>
+    <view type="form" name="sale-dashboard-form"/>
+  </action-view>
+
+
   <menuitem name="sc-root-sale-report" parent="sc-root-sale" title="Reportings"
     order="1300" icon="fa-bar-chart"/>
 

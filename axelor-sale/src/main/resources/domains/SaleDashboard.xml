@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="sale" package="com.axelor.apps.sale.db"/>
+
+  <entity name="SaleDashboard" cacheable="true">
+
+    <string name="name" title="Dashboard Name"/>
+    <one-to-one name="company" ref="com.axelor.apps.base.db.Company"
+      title="Internal Company"/>
+    <many-to-one name="customer" ref="com.axelor.apps.base.db.Partner" title="Customer"/>
+    <integer name="dateSelection" title="Date Selection"
+      selection="sale.order.dash.board.date.selection"/>
+    <date name="startDate" title="Start Date"/>
+    <date name="endDate" title="End Date"/>
+
+  </entity>
+
+</domain-models>
