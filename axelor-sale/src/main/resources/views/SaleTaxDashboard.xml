@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="sale-tax-dashboard-grid" title="Sale Tax Dashboard"
+    model="com.axelor.apps.sale.db.SaleTaxDashboard">
+    <field name="name"/>
+  </grid>
+
+  <form name="sale-tax-dashboard-form" title="Sale Tax Dashboard" width="large"
+    onLoad="action-sale-tax-dash-board-method-calculation-of-sale-tax"
+    model="com.axelor.apps.sale.db.SaleTaxDashboard"
+    onNew="action-sale-tax-dash-board-method-on-new,save">
+    <panel name="mainPanel">
+      <spacer colSpan="2"/>
+      <field name="name" colSpan="2"/>
+      <spacer colSpan="8"/>
+
+      <spacer colSpan="2"/>
+      <field name="dateSelection" colSpan="2"
+        onChange="action-sale-tax-dash-board-method-on-change-date-section,action-sale-tax-dash-board-method-calculation-of-sale-tax,save"/>
+      <spacer colSpan="1"/>
+      <field name="startDate" colSpan="2"
+        onChange="action-sale-tax-dash-board-method-calculation-of-sale-tax,save"/>
+      <spacer colSpan="1"/>
+      <field name="endDate" colSpan="2"
+        onChange="action-sale-tax-dash-board-method-calculation-of-sale-tax,save"/>
+      <spacer colSpan="2"/>
+    </panel>
+
+    <panel>
+      <spacer colSpan="4"/>
+      <spacer colSpan="1"/>
+      <field name="statusSelect" colSpan="2" readonly="false"
+        onChange="action-sale-tax-dash-board-method-calculation-of-sale-tax,save"/>
+      <spacer colSpan="3"/>
+      <spacer colSpan="2"/>
+
+
+      <spacer colSpan="2"/>
+      <button name="$totalSaleTax" title="Total Sale Tax" colSpan="2" icon="fa-line-chart"
+        onClick="" widget="info-button"/>
+
+    </panel>
+
+    <panel-dashlet name="partnerSaleOrderPanel" colSpan="12" canSearch="true"
+      action="action-sale-order-partner-view-sales-orders-wich-has-tax" title="Sales orders"/>
+
+  </form>
+
+  <action-method name="action-sale-tax-dash-board-method-on-new">
+    <call class="com.axelor.apps.sale.web.SaleTaxDashboardController" method="setDashbordName"/>
+  </action-method>
+
+  <action-method name="action-sale-tax-dash-board-method-calculation-of-sale-tax">
+    <call class="com.axelor.apps.sale.web.SaleTaxDashboardController"
+      method="calculateTotalSaleTax"/>
+  </action-method>
+
+  <action-method name="action-sale-tax-dash-board-method-on-change-date-section">
+    <call class="com.axelor.apps.sale.web.SaleTaxDashboardController" method="setDateRange"/>
+  </action-method>
+
+  <action-view name="action-sale-order-partner-view-sales-orders-wich-has-tax"
+    title="Sales orders" model="com.axelor.apps.sale.db.SaleOrder">
+    <view type="grid" name="sale-order-grid"/>
+    <view type="form" name="sale-order-form"/>
+    <domain>(self.taxTotal &gt; 0) AND
+      self.creationDate &gt; :startDate AND self.creationDate &lt;
+      :endDate</domain>
+  </action-view>
+
+</object-views>

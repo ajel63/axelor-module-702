@@ -40,6 +40,8 @@ import com.axelor.apps.base.service.exception.HandleExceptionResponse;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.sale.db.Pack;
+import com.axelor.apps.sale.db.PaymentRefundLine;
+import com.axelor.apps.sale.db.PaymentRegisterLine;
 import com.axelor.apps.sale.db.PurchaseLabel;
 import com.axelor.apps.sale.db.PurchaseLabelRateLine;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -947,5 +949,28 @@ public class SaleOrderController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void calculateTotalRegisterPayment(ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    BigDecimal totalRegisterAmount = new BigDecimal(0);
+    BigDecimal totalPaidAmount = new BigDecimal(0);
+    BigDecimal totalRefundAmount = new BigDecimal(0);
+
+    for (PaymentRegisterLine paymentRegisterLine : saleOrder.getPaymentRegisterLine()) {
+      totalPaidAmount = totalPaidAmount.add(paymentRegisterLine.getAmount());
+    }
+
+    for (PaymentRefundLine paymentRefundLine : saleOrder.getPaymentRefundLine()) {
+      totalRefundAmount = totalRefundAmount.add(paymentRefundLine.getAmount());
+    }
+
+    totalRegisterAmount = totalRegisterAmount.add(totalPaidAmount);
+    totalRegisterAmount = totalRegisterAmount.add(saleOrder.getStripePaidAmount());
+
+    saleOrder.setTotalPaidAmount(saleOrder.getStripePaidAmount().add(saleOrder.getPaidAmount()));
+    response.setValue("paidAmount", totalPaidAmount);
+    response.setValue("refundedAmount", totalRefundAmount);
+    response.setValue("totalPaidAmount", totalRegisterAmount);
   }
 }

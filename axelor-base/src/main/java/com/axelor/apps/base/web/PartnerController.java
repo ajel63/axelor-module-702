@@ -23,6 +23,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Bank;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Donation;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BankRepository;
 import com.axelor.apps.base.db.repo.CompanyRepository;
@@ -410,6 +411,23 @@ public class PartnerController {
     PartnerService partnerService = Beans.get(PartnerService.class);
     if (!partnerService.isRegistrationCodeValid(partner)) {
       response.setError(I18n.get(BaseExceptionMessage.PARTNER_INVALID_REGISTRATION_CODE));
+    }
+  }
+
+  public void printDonationRecipt(ActionRequest request, ActionResponse response) {
+    try {
+      Donation donation = request.getContext().asType(Donation.class);
+
+      String fileLink =
+          ReportFactory.createReport("SvgReceipt.rptdesign", "SvgReceipt" + "-${date}")
+              .addParam("id", donation.getId())
+              .generate()
+              .getFileLink();
+
+      // System.err.println(fileLink); debug
+      response.setView(ActionView.define("Svg Receipt").add("html", fileLink).map());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

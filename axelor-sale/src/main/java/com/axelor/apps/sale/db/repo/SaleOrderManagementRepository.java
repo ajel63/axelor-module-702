@@ -95,6 +95,9 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
 
       computeSubMargin(saleOrder);
       Beans.get(SaleOrderMarginService.class).computeMarginSaleOrder(saleOrder);
+
+      saleOrder.setTotalPaidAmount(saleOrder.getStripePaidAmount().add(saleOrder.getPaidAmount()));
+
       return super.save(saleOrder);
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);

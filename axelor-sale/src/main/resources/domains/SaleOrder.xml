@@ -242,6 +242,16 @@
     <string name="zDentalOrderTypeSelect" title="Sale Order Type" massUpdate="true"
       selection="sale.order.z.dental.order.type.select"/>
 
+    <one-to-many ref="com.axelor.apps.sale.db.PaymentRegisterLine"
+      name="paymentRegisterLine" title="Payment Register" mappedBy="saleOrder"/>
+    <decimal name="paidAmount" title="Paid Amount" scale="2" precision="20"/>
+
+    <one-to-many ref="com.axelor.apps.sale.db.PaymentRefundLine"
+      name="paymentRefundLine" title="Payment Refund" mappedBy="saleOrder"/>
+    <decimal name="refundedAmount" title="Refunded Amount" scale="2" precision="20"/>
+
+    <decimal name="totalPaidAmount" title="Total Paid Amount"/>
+
     <unique-constraint columns="saleOrderSeq,company"/>
 
     <finder-method name="findBySaleOrderSeqAndCompany" using="saleOrderSeq,company"/>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="payment-refund-line-grid" title="Payment Refund"
+    model="com.axelor.apps.sale.db.PaymentRefundLine">
+    <field name="paymentMode"/>
+    <field name="paymentReference"/>
+    <field name="amount"/>
+    <field name="notes"/>
+  </grid>
+
+  <form name="payment-refund-line-form" title="Payment Refund"
+    model="com.axelor.apps.sale.db.PaymentRefundLine" onNew="">
+    <panel name="packPanel">
+      <field name="paymentMode"/>
+      <field name="paymentReference"/>
+      <field name="amount"/>
+      <field name="notes"/>
+    </panel>
+  </form>
+
+
+</object-views>

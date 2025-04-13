@@ -6,7 +6,6 @@
   <grid name="sale-dashboard-grid" title="SaleDashboard"
     model="com.axelor.apps.sale.db.SaleDashboard">
     <field name="name"/>
-    <field name="company"/>
     <field name="customer"/>
   </grid>
 
@@ -19,8 +18,8 @@
       <spacer colSpan="1"/>
       <field name="customer" colSpan="2"
         onChange="action-sale-dash-board-method-calculation-of-sale,save"/>
-      <spacer colSpan="1"/>
-      <field name="company" colSpan="2"/>
+      <spacer colSpan="3"/>
+
       <spacer colSpan="2"/>
 
       <spacer colSpan="2"/>
@@ -36,6 +35,14 @@
     </panel>
 
     <panel>
+      <spacer colSpan="4"/>
+      <spacer colSpan="1"/>
+      <field name="statusSelect" colSpan="2" readonly="false"
+        onChange="action-sale-dash-board-method-calculation-of-sale,save"/>
+      <spacer colSpan="3"/>
+      <spacer colSpan="2"/>
+
+
       <spacer colSpan="2"/>
       <button name="$totalAmountWt" title="Total Sale without Tax" colSpan="2"
         icon="fa-line-chart" onClick="" widget="info-button"/>

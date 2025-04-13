@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="svg-donation-grid" title="Donation" model="com.axelor.apps.base.db.Donation">
+    <field name="fullName"/>
+    <field name="phoneNumber"/>
+    <field name="email"/>
+
+    <field name="eventCity"/>
+    <field name="donationPurpose"/>
+    <field name="donationPurposeNote"/>
+
+    <field name="amount"/>
+    <field name="paymentMethod"/>
+    <field name="paidDate"/>
+
+    <field name="notes"/>
+
+    <field name="statusSelect"/>
+    <field name="isAnonymous"/>
+  </grid>
+
+  <form name="svg-donation-form" title="Donation" model="com.axelor.apps.base.db.Donation"
+    width="large">
+    <toolbar>
+      <button onClick="save,action-svg-donation-print-recipt" name="printReciptBtn"
+        title="Print Recipt"/>
+      <button onClick="" name="EmailReciptBtn" title="Send Email"/>
+    </toolbar>
+    <panel name="mainPanel">
+      <field name="fullName" colSpan="4"/>
+      <field name="phoneNumber" colSpan="4"/>
+      <field name="email" colSpan="4"/>
+
+      <spacer colSpan="12"/>
+
+      <field name="eventCity" colSpan="4"/>
+      <field name="donationPurpose" colSpan="4"/>
+      <field name="donationPurposeNote" colSpan="4"/>
+
+      <spacer colSpan="12"/>
+
+      <field name="amount" colSpan="4"/>
+      <field name="paymentMethod" colSpan="4"/>
+      <field name="paidDate" colSpan="4"/>
+
+      <spacer colSpan="12"/>
+      <field name="notes" colSpan="12"/>
+    </panel>
+
+    <panel sidebar="true">
+      <field name="statusSelect" colSpan="12"/>
+      <field name="isAnonymous" colSpan="12"/>
+    </panel>
+
+  </form>
+
+
+  <selection name="status-donation-event-city-select">
+    <option value="Berlin">Berlin</option>
+    <option value="Nuremberg">Nuremberg</option>
+    <option value="Frankfurt">Frankfurt</option>
+  </selection>
+
+  <selection name="status-donation-purpose-select">
+    <option value="Shakotsav Mukhaya Yajman">Shakotsav Mukhaya Yajman (1111)</option>
+    <option value="Shakotsav Sah Yajman">Shakotsav Sah Yajman (751)</option>
+    <option value="Dharmkul Pujan Mukhaya Yajman">Dharmkul Pujan Mukhaya Yajman (1111)</option>
+    <option value="Dharmkul Pujan Sah Yajman">Dharmkul Pujan Sah Yajman (751)</option>
+    <option value="Sant Pujan Mukhaya Yajman">Sant Pujan Mukhaya Yajman (501)</option>
+    <option value="Sant Pujan Sah Yajman">Sant Pujan Sah Yajman (301)</option>
+    <option value="Dharmkul Rasoy na Yajman">Dharmkul Rasoy na Yajman (251)</option>
+    <option value="Santo ni Rasoy Yajman">Santo ni Rasoy Yajman (151)</option>
+    <option value="Mahaprasad na Yajman">Mahaprasad na Yajman (101)</option>
+    <option value="Other">Other</option>
+  </selection>
+
+  <selection name="status-donation-payment-method-select">
+    <option value="Bank">Bank</option>
+    <option value="Cash">Cash</option>
+  </selection>
+
+  <selection name="status-donation-status-select">
+    <option value="0">Not Paid</option>
+    <option value="1">Partially Paid</option>
+    <option value="2">Fully Paid</option>
+  </selection>
+
+  <action-view name="action.svg.donation.view" title="Donation"
+    model="com.axelor.apps.base.db.Donation">
+    <view type="grid" name="svg-donation-grid"/>
+    <view type="form" name="svg-donation-form"/>
+  </action-view>
+
+  <action-method name="action-svg-donation-print-recipt">
+    <call class="com.axelor.apps.base.web.PartnerController" method="printDonationRecipt"/>
+  </action-method>
+
+</object-views>

@@ -62,7 +62,7 @@
       </menu>
     </menubar>
     <hilite background="warning"
-      if="(saleOrderSeq != null) &amp;&amp; (stripePaidAmount &lt; inTaxTotal)"/>
+      if="(saleOrderSeq != null) &amp;&amp; (totalPaidAmount &lt; inTaxTotal)"/>
     <field name="endOfValidityDate" hidden="true"/>
     <field name="saleOrderSeq" width="120"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
@@ -75,7 +75,7 @@
     <field name="confirmationDateTime"/>
     <field name="exTaxTotal" aggregate="sum"/>
     <field name="inTaxTotal" aggregate="sum"/>
-    <field name="stripePaidAmount"/>
+    <field name="totalPaidAmount"/>
     <field name="amountInvoiced" hidden="true" aggregate="sum"
       if="__config__.app.isApp('supplychain')"/>
     <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
@@ -88,7 +88,6 @@
       onClick="action-send-by-email-with-template"/>
     <field name="woocommerceOrderLink"/>
     <field name="soNum"/>
-    <field name="stripePaidAmount" hidden="true"/>
   </grid>
 
   <grid name="sale-order-partner-grid" title="Sale orders"
@@ -628,25 +627,42 @@
         </panel>
       </panel>
       <panel name="invoicingPanel" title="Invoicing">
-        <panel-dashlet name="saleOrderInvoicePanel"
-          if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" title="Invoicing"
-          showIf="statusSelect >= 3" action="action-view-show-invoices-from-sale-order" colSpan="12"/>
 
-        <panel name="stripePaymentPanel" title="Payments" colSpan="12">
+
+        <panel name="stripePaymentPanel" title="Stripe Payments" colSpan="6">
           <button onClick="save,action-sale-order-get-stripe-payment-record,save"
-            name="getPaymentRecordBtn" title="Get Payment Record" colSpan="4"/>
-          <field name="stripePaidAmount" colSpan="4"/>
+            name="getPaymentRecordBtn" title="Get Payment Record" colSpan="6"/>
+          <field name="stripePaidAmount" colSpan="6"/>
           <panel-related field="stripePayment" name="stripePaymentPanel"
             grid-view="stripe-payment-line-grid" colSpan="12" title="Payments"
             form-view="stripe-payment-line-form"/>
 
           <button onClick="save,action-sale-order-get-stripe-refund-record,save"
-            name="getRefundRecordBtn" title="Get Refund Record" colSpan="4"/>
-          <field name="stripeRefundedAmount" colSpan="4"/>
+            name="getRefundRecordBtn" title="Get Refund Record" colSpan="6"/>
+          <field name="stripeRefundedAmount" colSpan="6"/>
           <panel-related field="stripeRefund" name="stripeRefundPanel"
             grid-view="stripe-refund-line-grid" colSpan="12" title="Refund"
             form-view="stripe-refund-line-form"/>
         </panel>
+
+        <panel name="otherPaymentPanel" title="Other Payments" colSpan="6">
+          <field name="paidAmount" colSpan="6"/>
+          <panel-related field="paymentRegisterLine" name="paymentRefundLinePanel"
+            grid-view="payment-register-line-grid" colSpan="12" title="Payments"
+            form-view="payment-register-line-form"
+            onChange="action-sale-order-method-sum-total-register-payment"/>
+
+          <field name="refundedAmount" colSpan="6"/>
+          <panel-related field="paymentRefundLine" name="paymentRefundLinePanel"
+            grid-view="payment-refund-line-grid" colSpan="12" title="Refund"
+            form-view="payment-refund-line-form"/>
+        </panel>
+
+
+        <panel-dashlet name="saleOrderInvoicePanel"
+          if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" title="Invoicing"
+          showIf="statusSelect >= 3" action="action-view-show-invoices-from-sale-order" colSpan="12"/>
+
         <panel name="invoiceCommentsPanel" title="Comment to display on invoice" colSpan="12">
           <field name="invoiceComments" widget="html" colSpan="12" showTitle="false"/>
         </panel>
@@ -865,7 +881,7 @@
       <separator/>
       <field name="inTaxTotal" showTitle="false" colSpan="12" css="order-subtotal">
         <viewer
-          depends="exTaxTotal,currency.symbol,taxTotal,statusSelect,amountInvoiced,advanceTotal,totalShippingCost"><![CDATA[
+          depends="exTaxTotal,currency.symbol,taxTotal,statusSelect,amountInvoiced,advanceTotal,totalShippingCost,totalPaidAmount"><![CDATA[
 
 	                  <dl class="dl-horizontal">
 	                      <dt x-translate>Total W.T.</dt>
@@ -876,6 +892,8 @@
 	                      <dd class="order-subtotal-total">{{$fmt('inTaxTotal') | currency: record.currency.symbol}}</dd>
 						  <dt class="" x-translate>Shipping Cost</dt>
 	                      <dd class="">{{$fmt('totalShippingCost') | currency: record.currency.symbol}}</dd>
+	                      <dt class="" x-translate>Total Paid Amount</dt>
+	                      <dd class="">{{$fmt('totalPaidAmount') | currency: record.currency.symbol}}</dd>
 	                      <dt ng-show="record.statusSelect >= 3" x-translate>Amount invoiced W.T.</dt>
 	                      <dd ng-show="record.statusSelect >= 3">{{$fmt('amountInvoiced') | currency: record.currency.symbol}}</dd>
 	                      <dt ng-show="record.statusSelect >= 2" x-translate>Advance payment A.T.I. total</dt>
@@ -2545,4 +2563,8 @@
     <call class="com.axelor.apps.sale.web.SaleOrderController" method="calculateShippingCost"/>
   </action-method>
 
+  <action-method name="action-sale-order-method-sum-total-register-payment">
+    <call class="com.axelor.apps.sale.web.SaleOrderController"
+      method="calculateTotalRegisterPayment"/>
+  </action-method>
 </object-views>

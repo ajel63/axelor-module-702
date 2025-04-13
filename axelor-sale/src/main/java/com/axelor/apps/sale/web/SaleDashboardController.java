@@ -31,6 +31,7 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -147,7 +148,7 @@ public class SaleDashboardController {
       BigDecimal zdsShippingCost = BigDecimal.ZERO;
       BigDecimal wooShippingCost = BigDecimal.ZERO;
 
-      BigDecimal zdsTotalStripePaidAmount = BigDecimal.ZERO;
+      BigDecimal zdsTotalRemainingAmount = BigDecimal.ZERO;
 
       if (saleDashboard.getCustomer() == null
           || saleDashboard.getStartDate() == null
@@ -174,15 +175,29 @@ public class SaleDashboardController {
         return;
       }
 
-      List<SaleOrder> saleOrders =
-          Beans.get(SaleOrderRepository.class)
-              .all()
-              .filter(
-                  "self.clientPartner = ? AND self.creationDate > ? AND self.creationDate < ?",
-                  saleDashboard.getCustomer(),
-                  saleDashboard.getStartDate(),
-                  saleDashboard.getEndDate())
-              .fetch();
+      List<SaleOrder> saleOrders = new ArrayList<SaleOrder>();
+      if (saleDashboard.getStatusSelect() <= 0) {
+        saleOrders =
+            Beans.get(SaleOrderRepository.class)
+                .all()
+                .filter(
+                    "self.clientPartner = ? AND self.creationDate > ? AND self.creationDate < ?",
+                    saleDashboard.getCustomer(),
+                    saleDashboard.getStartDate(),
+                    saleDashboard.getEndDate())
+                .fetch();
+      } else {
+        saleOrders =
+            Beans.get(SaleOrderRepository.class)
+                .all()
+                .filter(
+                    "self.clientPartner = ? AND self.creationDate > ? AND self.creationDate < ? AND self.statusSelect = ?",
+                    saleDashboard.getCustomer(),
+                    saleDashboard.getStartDate(),
+                    saleDashboard.getEndDate(),
+                    saleDashboard.getStatusSelect())
+                .fetch();
+      }
 
       for (SaleOrder saleOrder : saleOrders) {
         totalWt = totalWt.add(saleOrder.getInTaxTotal());
@@ -194,7 +209,9 @@ public class SaleDashboardController {
           zdsTax = zdsTax.add(saleOrder.getTaxTotal());
           zdsShippingCost = zdsShippingCost.add(saleOrder.getTotalShippingCost());
 
-          zdsTotalStripePaidAmount = zdsTotalStripePaidAmount.add(saleOrder.getStripePaidAmount());
+          zdsTotalRemainingAmount =
+              zdsTotalRemainingAmount.add(
+                  saleOrder.getInTaxTotal().subtract(saleOrder.getPaidAmount()));
         } else {
           wooTotalWt = wooTotalWt.add(saleOrder.getInTaxTotal());
           wooTax = wooTax.add(saleOrder.getTaxTotal());
@@ -220,12 +237,8 @@ public class SaleDashboardController {
       response.setValue("$zdsTotalAmount", zdsTotalWt.add(zdsTax).add(zdsShippingCost));
       response.setValue("$wooTotalAmount", wooTotalWt.add(wooTax).add(wooShippingCost));
 
-      response.setValue(
-          "$totalAmountRemaining",
-          totalWt.add(totalTax).add(totalShippingCost).subtract(zdsTotalStripePaidAmount));
-      response.setValue(
-          "$zdsTotalAmountRemaining",
-          totalWt.add(totalTax).add(totalShippingCost).subtract(zdsTotalStripePaidAmount));
+      response.setValue("$totalAmountRemaining", zdsTotalRemainingAmount);
+      response.setValue("$zdsTotalAmountRemaining", zdsTotalRemainingAmount);
       response.setValue("$wooTotalAmountRemaining", "0.00");
 
     } catch (Exception e) {
