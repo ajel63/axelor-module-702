@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="svg-donation-out-grid" title="Donation Out" model="com.axelor.apps.base.db.DonationOut">
+    <field name="paidBy" title="Paid By" required="true"/>
+    <field name="paidAmount" title="paidAmount"/>
+    <field name="paidDate" title="Paid Date"/>
+    <field name="statusSelect" title="Status" />
+    <field name="transactionPurpose" title="Transaction Purpose"/>
+
+    <field name="referencePerson" title="Reference Person"/>
+    <field name="referencePersonEmail" title="Reference Person Email"/>
+    <field name="referencePersonPhone" title="Reference Person Phone"/>
+    <field name="referencePersonAmount" title="Reference Person Amount"/>
+    <field name="notes" title="Notes" />
+    
+  </grid>
+
+  <form name="svg-donation-out-form" title="Donation Out" model="com.axelor.apps.base.db.DonationOut"
+    width="large">
+    <panel name="mainPanel">
+      <field name="paidBy" title="Paid By" required="true" colSpan="4"/>
+   	  <field name="paidAmount" title="paidAmount" colSpan="4"/>
+      <field name="paidDate" title="Paid Date" colSpan="4"/>
+      
+      <spacer colSpan="12"/>
+
+      <field name="transactionPurpose" title="Transaction Purpose" colSpan="4"/>
+      <field name="statusSelect" title="Status" colSpan="4"/>
+
+      <spacer colSpan="12"/>
+      <field name="notes" colSpan="12"/>
+    </panel>
+
+    <panel sidebar="true">
+       <field name="referencePerson" title="Reference Person" colSpan="12"/>
+	    <field name="referencePersonEmail" title="Reference Person Email" colSpan="12"/>
+	    <field name="referencePersonPhone" title="Reference Person Phone" colSpan="12"/>
+	    <field name="referencePersonAmount" title="Reference Person Amount" colSpan="12"/>
+    </panel>
+
+  </form>
+
+
+
+  <action-view name="action.svg.donation.out.view" title="Donation Out"
+    model="com.axelor.apps.base.db.DonationOut">
+    <view type="grid" name="svg-donation-out-grid"/>
+    <view type="form" name="svg-donation-out-form"/>
+  </action-view>
+
+
+</object-views>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="DonationOut">
+
+    <string name="paidBy" title="Paid By" required="true"/>
+    <decimal name="paidAmount" title="paid Amount"/>
+    <date name="paidDate" title="Paid Date"/>
+    <integer name="statusSelect" title="Status" selection="status-donation-status-select"/>
+    <string name="transactionPurpose" title="Transaction Purpose"/>
+
+    <string name="referencePerson" title="Reference Person"/>
+    <string name="referencePersonEmail" title="Reference Person Email"/>
+    <string name="referencePersonPhone" title="Reference Person Phone"/>
+    <decimal name="referencePersonAmount" title="Reference Person Amount"/>
+
+    <string name="notes" title="Notes" large="true"/>
+
+  </entity>
+
+</domain-models>
