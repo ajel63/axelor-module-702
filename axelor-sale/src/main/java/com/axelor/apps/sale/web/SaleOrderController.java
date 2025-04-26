@@ -46,11 +46,14 @@ import com.axelor.apps.sale.db.PurchaseLabel;
 import com.axelor.apps.sale.db.PurchaseLabelRateLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.ShipmentApiConfig;
+import com.axelor.apps.sale.db.ShipmentLine;
 import com.axelor.apps.sale.db.StripePaymentConfig;
 import com.axelor.apps.sale.db.StripePaymentLine;
 import com.axelor.apps.sale.db.StripeRefundLine;
 import com.axelor.apps.sale.db.repo.PackRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.db.repo.ShipmentApiConfigRepository;
 import com.axelor.apps.sale.db.repo.StripePaymentConfigRepository;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.SaleOrderDomainService;
@@ -972,5 +975,29 @@ public class SaleOrderController {
     response.setValue("paidAmount", totalPaidAmount);
     response.setValue("refundedAmount", totalRefundAmount);
     response.setValue("totalPaidAmount", totalRegisterAmount);
+  }
+
+  public void printAllReceipt(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+
+    String url = "";
+    ShipmentApiConfig shipmentApiConfig =
+        Beans.get(ShipmentApiConfigRepository.class).all().fetchOne();
+
+    if (shipmentApiConfig == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          "Please configure Shipment API: base Urls and API key.");
+    }
+
+    url = shipmentApiConfig.getBaseUrl();
+    url = url + "/shipping/pdfs?pdfUrl=";
+
+    for (ShipmentLine shipmentLine : saleOrder.getShipment()) {
+      url = url + shipmentLine.getLableUrl() + ",";
+    }
+
+    response.setView(ActionView.define(saleOrder.getSaleOrderSeq()).add("html", url).map());
   }
 }

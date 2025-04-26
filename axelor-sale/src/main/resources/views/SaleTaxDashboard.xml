@@ -39,6 +39,7 @@
 
 
       <spacer colSpan="2"/>
+      <spacer colSpan="3"/>
       <button name="$totalSaleTax" title="Total Sale Tax" colSpan="2" icon="fa-line-chart"
         onClick="" widget="info-button"/>
 
@@ -67,7 +68,7 @@
     <view type="grid" name="sale-order-grid"/>
     <view type="form" name="sale-order-form"/>
     <domain>(self.taxTotal &gt; 0) AND
-      self.creationDate &gt; :startDate AND self.creationDate &lt;
+      self.creationDate &gt;= :startDate AND self.creationDate &lt;=
       :endDate</domain>
   </action-view>
 

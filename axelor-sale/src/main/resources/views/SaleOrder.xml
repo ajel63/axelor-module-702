@@ -74,6 +74,7 @@
     <field name="externalReference"/>
     <field name="confirmationDateTime"/>
     <field name="exTaxTotal" aggregate="sum"/>
+    <field name="taxTotal"/>
     <field name="inTaxTotal" aggregate="sum"/>
     <field name="totalPaidAmount"/>
     <field name="amountInvoiced" hidden="true" aggregate="sum"
@@ -789,6 +790,8 @@
           title="Purchase Lable List" grid-view="shipment-purchase-label-grid"
           form-view="shipment-purchase-label-form" colSpan="12"/>
 
+        <button onClick="save,action-sale-order-method-print-all-receipt"
+          name="btnPrintAllReceipts" title="Print All Receipts"/>
         <panel-related field="shipment" name="shipment" title="Shipment"
           grid-view="shipment-grid" form-view="shipment-form" colSpan="12"/>
       </panel>
@@ -2567,4 +2570,9 @@
     <call class="com.axelor.apps.sale.web.SaleOrderController"
       method="calculateTotalRegisterPayment"/>
   </action-method>
+
+  <action-method name="action-sale-order-method-print-all-receipt">
+    <call class="com.axelor.apps.sale.web.SaleOrderController" method="printAllReceipt"/>
+  </action-method>
+
 </object-views>

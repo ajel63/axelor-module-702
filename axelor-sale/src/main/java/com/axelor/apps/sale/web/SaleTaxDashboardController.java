@@ -19,13 +19,19 @@
 package com.axelor.apps.sale.web;
 
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleTaxDashboard;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.inject.Beans;
 import com.axelor.meta.CallMethod;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.ArrayList;
+import java.util.List;
 
 @Singleton
 public class SaleTaxDashboardController {
@@ -91,6 +97,13 @@ public class SaleTaxDashboardController {
     }
 
     if (saleTaxDashboard.getDateSelection() == 4) {
+      LocalDate startOfYear = LocalDate.of(LocalDate.now().getYear(), 1, 1);
+      LocalDate today = LocalDate.now();
+      response.setValue("startDate", startOfYear);
+      response.setValue("endDate", today);
+    }
+
+    if (saleTaxDashboard.getDateSelection() == 5) {
       response.setValue("startDate", null);
       response.setValue("endDate", null);
     }
@@ -114,6 +127,41 @@ public class SaleTaxDashboardController {
 
     try {
       SaleTaxDashboard saleTaxDashboard = request.getContext().asType(SaleTaxDashboard.class);
+      BigDecimal totalSaleTax = BigDecimal.ZERO;
+
+      if (saleTaxDashboard.getStartDate() == null || saleTaxDashboard.getEndDate() == null) {
+        response.setValue("$totalSaleTax", "0.00");
+        return;
+      }
+
+      List<SaleOrder> saleOrders = new ArrayList<SaleOrder>();
+
+      if (saleTaxDashboard.getStatusSelect() <= 0) {
+        saleOrders =
+            Beans.get(SaleOrderRepository.class)
+                .all()
+                .filter(
+                    "self.creationDate >= ? AND self.creationDate <= ?",
+                    saleTaxDashboard.getStartDate(),
+                    saleTaxDashboard.getEndDate())
+                .fetch();
+      } else {
+        saleOrders =
+            Beans.get(SaleOrderRepository.class)
+                .all()
+                .filter(
+                    "self.creationDate >= ? AND self.creationDate <= ? AND self.statusSelect = ?",
+                    saleTaxDashboard.getStartDate(),
+                    saleTaxDashboard.getEndDate(),
+                    saleTaxDashboard.getStatusSelect())
+                .fetch();
+      }
+
+      for (SaleOrder saleOrder : saleOrders) {
+        totalSaleTax = totalSaleTax.add(saleOrder.getTaxTotal());
+      }
+
+      response.setValue("$totalSaleTax", totalSaleTax);
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);

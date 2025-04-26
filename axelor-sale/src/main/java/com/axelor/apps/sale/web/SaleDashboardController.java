@@ -112,6 +112,13 @@ public class SaleDashboardController {
     }
 
     if (saleDashboard.getDateSelection() == 4) {
+      LocalDate startOfYear = LocalDate.of(LocalDate.now().getYear(), 1, 1);
+      LocalDate today = LocalDate.now();
+      response.setValue("startDate", startOfYear);
+      response.setValue("endDate", today);
+    }
+
+    if (saleDashboard.getDateSelection() == 5) {
       response.setValue("startDate", null);
       response.setValue("endDate", null);
     }
@@ -181,7 +188,7 @@ public class SaleDashboardController {
             Beans.get(SaleOrderRepository.class)
                 .all()
                 .filter(
-                    "self.clientPartner = ? AND self.creationDate > ? AND self.creationDate < ?",
+                    "self.clientPartner = ? AND self.creationDate >= ? AND self.creationDate <= ?",
                     saleDashboard.getCustomer(),
                     saleDashboard.getStartDate(),
                     saleDashboard.getEndDate())
@@ -191,7 +198,7 @@ public class SaleDashboardController {
             Beans.get(SaleOrderRepository.class)
                 .all()
                 .filter(
-                    "self.clientPartner = ? AND self.creationDate > ? AND self.creationDate < ? AND self.statusSelect = ?",
+                    "self.clientPartner = ? AND self.creationDate >= ? AND self.creationDate <= ? AND self.statusSelect = ?",
                     saleDashboard.getCustomer(),
                     saleDashboard.getStartDate(),
                     saleDashboard.getEndDate(),
@@ -200,20 +207,24 @@ public class SaleDashboardController {
       }
 
       for (SaleOrder saleOrder : saleOrders) {
-        totalWt = totalWt.add(saleOrder.getInTaxTotal());
+        totalWt = totalWt.add(saleOrder.getExTaxTotal());
         totalTax = totalTax.add(saleOrder.getTaxTotal());
         totalShippingCost = totalShippingCost.add(saleOrder.getTotalShippingCost());
 
         if (saleOrder.getSaleOrderSeq() != null) {
-          zdsTotalWt = zdsTotalWt.add(saleOrder.getInTaxTotal());
+          zdsTotalWt = zdsTotalWt.add(saleOrder.getExTaxTotal());
           zdsTax = zdsTax.add(saleOrder.getTaxTotal());
           zdsShippingCost = zdsShippingCost.add(saleOrder.getTotalShippingCost());
 
           zdsTotalRemainingAmount =
               zdsTotalRemainingAmount.add(
-                  saleOrder.getInTaxTotal().subtract(saleOrder.getPaidAmount()));
+                  saleOrder
+                      .getExTaxTotal()
+                      .add(saleOrder.getTaxTotal())
+                      .add(saleOrder.getTotalShippingCost())
+                      .subtract(saleOrder.getPaidAmount()));
         } else {
-          wooTotalWt = wooTotalWt.add(saleOrder.getInTaxTotal());
+          wooTotalWt = wooTotalWt.add(saleOrder.getExTaxTotal());
           wooTax = wooTax.add(saleOrder.getTaxTotal());
           wooShippingCost = wooShippingCost.add(saleOrder.getTotalShippingCost());
         }

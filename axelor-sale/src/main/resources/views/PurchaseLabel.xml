@@ -66,6 +66,9 @@
     </panel>
 
     <panel>
+
+      <button onClick="save,action-purchase-lable-method-print-all-receipt"
+        name="btnPrintAllReceipts" title="Print All Receipts"/>
       <panel-related field="multiShipmentPackageLine" readonlyIf="isShippingConfirm"
         name="multiShipmentPackageLinePanel" colSpan="12"
         grid-view="multi-shipment-package-line-grid" form-view="multi-shipment-package-line-form"/>
@@ -127,6 +130,10 @@
 
   <action-method name="action-purchase-lable-method-set-selected-carrier-service">
     <call class="com.axelor.apps.sale.web.PurchaseLableController" method="setSelectedCarrier"/>
+  </action-method>
+
+  <action-method name="action-purchase-lable-method-print-all-receipt">
+    <call class="com.axelor.apps.sale.web.PurchaseLableController" method="printAllReceipt"/>
   </action-method>
 
 </object-views>

@@ -129,6 +129,7 @@
     <option value="1">Last Month</option>
     <option value="2">Last Quarter</option>
     <option value="3">Last Year</option>
-    <option value="4">Custom date</option>
+    <option value="4">Year To Date</option>
+    <option value="5">Custom date</option>
   </selection>
 </object-views>

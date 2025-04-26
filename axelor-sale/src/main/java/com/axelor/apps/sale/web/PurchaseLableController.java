@@ -21,14 +21,17 @@ package com.axelor.apps.sale.web;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.sale.db.MultiShipmentPackageLine;
 import com.axelor.apps.sale.db.PurchaseLabel;
 import com.axelor.apps.sale.db.PurchaseLabelRateLine;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.ShipmentApiConfig;
 import com.axelor.apps.sale.db.ShipmentLine;
 import com.axelor.apps.sale.db.ShippService;
 import com.axelor.apps.sale.db.repo.PurchaseLabelRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.db.repo.ShipmentApiConfigRepository;
 import com.axelor.apps.sale.db.repo.ShipmentLineRepository;
 import com.axelor.apps.sale.service.PurchaseLableService;
 import com.axelor.inject.Beans;
@@ -189,5 +192,30 @@ public class PurchaseLableController {
             .returnShipmentLable(
                 Beans.get(ShipmentLineRepository.class).find(shipmentLine.getId()));
     response.setValue("isReturnConfirm", returnedLable);
+  }
+
+  public void printAllReceipt(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Context context = request.getContext();
+    PurchaseLabel purchaseLabel = context.asType(PurchaseLabel.class);
+
+    String url = "";
+    ShipmentApiConfig shipmentApiConfig =
+        Beans.get(ShipmentApiConfigRepository.class).all().fetchOne();
+
+    if (shipmentApiConfig == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          "Please configure Shipment API: base Urls and API key.");
+    }
+
+    url = shipmentApiConfig.getBaseUrl();
+    url = url + "/shipping/pdfs?pdfUrl=";
+
+    for (MultiShipmentPackageLine multiShipmentLine : purchaseLabel.getMultiShipmentPackageLine()) {
+      url = url + multiShipmentLine.getLableUrl() + ",";
+    }
+
+    response.setView(ActionView.define(purchaseLabel.getBillInfo()).add("html", url).map());
   }
 }
