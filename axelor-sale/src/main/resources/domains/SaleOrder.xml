@@ -252,6 +252,13 @@
 
     <decimal name="totalPaidAmount" title="Total Paid Amount"/>
 
+    <boolean name="qtyIsReserved" title="Qty Is Reserved"/>
+    <boolean name="qtyIsRelease" title="Qty Is Release"/>
+    <boolean name="qtyIsReturn" title="Qty Is Return"/>
+    <many-to-one ref="com.axelor.apps.base.db.Warehouse" name="warehouse"
+      title="Warehouse"/>
+    <string name="inventoryNotes" title="Inventory Notes" large="true"/>
+
     <unique-constraint columns="saleOrderSeq,company"/>
 
     <finder-method name="findBySaleOrderSeqAndCompany" using="saleOrderSeq,company"/>

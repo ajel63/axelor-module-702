@@ -28,9 +28,13 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.ProductInventoryLine;
+import com.axelor.apps.base.db.Warehouse;
 import com.axelor.apps.base.db.repo.CurrencyRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.apps.base.db.repo.ProductInventoryLineRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PartnerPriceListService;
@@ -971,7 +975,9 @@ public class SaleOrderController {
     totalRegisterAmount = totalRegisterAmount.add(totalPaidAmount);
     totalRegisterAmount = totalRegisterAmount.add(saleOrder.getStripePaidAmount());
 
-    saleOrder.setTotalPaidAmount(saleOrder.getStripePaidAmount().add(saleOrder.getPaidAmount()));
+    totalRegisterAmount.subtract(totalRefundAmount);
+    totalRegisterAmount.subtract(saleOrder.getStripeRefundedAmount());
+
     response.setValue("paidAmount", totalPaidAmount);
     response.setValue("refundedAmount", totalRefundAmount);
     response.setValue("totalPaidAmount", totalRegisterAmount);
@@ -999,5 +1005,126 @@ public class SaleOrderController {
     }
 
     response.setView(ActionView.define(saleOrder.getSaleOrderSeq()).add("html", url).map());
+  }
+
+  @Transactional
+  public void reserveProductQty(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+
+    if (saleOrder.getWarehouse() == null) {
+      response.setError("Please select the Warehouse on Saleorder.");
+      return;
+    }
+
+    if (saleOrder.getQtyIsReserved()) {
+      response.setAlert("Quentity is alredy reserved for this Sale order.");
+      return;
+    }
+
+    Warehouse warehouse = saleOrder.getWarehouse();
+
+    for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+      Product product = saleOrderLine.getProduct();
+      BigDecimal productQty = saleOrderLine.getQty();
+
+      for (ProductInventoryLine productInventoryLine : product.getInventoryLineList()) {
+        if (productInventoryLine.getWarehouse() != null
+            && productInventoryLine.getWarehouse() == warehouse) {
+          if (saleOrder.getQtyIsRelease()) {
+            productInventoryLine.setTotalQty(productInventoryLine.getTotalQty().add(productQty));
+          }
+          productInventoryLine.setOnGoingOrderQty(
+              productInventoryLine.getOnGoingOrderQty().add(productQty));
+          Beans.get(ProductInventoryLineRepository.class).save(productInventoryLine);
+          break;
+        }
+      }
+    }
+    response.setValue("qtyIsReserved", true);
+    response.setValue("qtyIsRelease", false);
+    response.setValue("qtyIsReturn", false);
+  }
+
+  @Transactional
+  public void releaseProductQty(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+
+    if (saleOrder.getWarehouse() == null) {
+      response.setError("Please select the Warehouse on Saleorder.");
+      return;
+    }
+
+    if (saleOrder.getQtyIsRelease()) {
+      response.setAlert("Quentity is alredy released for this Sale order.");
+      return;
+    }
+
+    Warehouse warehouse = saleOrder.getWarehouse();
+
+    for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+      Product product = saleOrderLine.getProduct();
+      BigDecimal productQty = saleOrderLine.getQty();
+
+      for (ProductInventoryLine productInventoryLine : product.getInventoryLineList()) {
+        if (productInventoryLine.getWarehouse() != null
+            && productInventoryLine.getWarehouse() == warehouse) {
+          if (saleOrder.getQtyIsReserved()) {
+            productInventoryLine.setOnGoingOrderQty(
+                productInventoryLine.getOnGoingOrderQty().subtract(productQty));
+          }
+          productInventoryLine.setTotalQty(productInventoryLine.getTotalQty().subtract(productQty));
+          Beans.get(ProductInventoryLineRepository.class).save(productInventoryLine);
+          break;
+        }
+      }
+    }
+    response.setValue("qtyIsReserved", false);
+    response.setValue("qtyIsRelease", true);
+    response.setValue("qtyIsReturn", false);
+  }
+
+  @Transactional
+  public void returnProductQty(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+
+    if (saleOrder.getWarehouse() == null) {
+      response.setError("Please select the Warehouse on Saleorder.");
+      return;
+    }
+
+    if (saleOrder.getQtyIsReturn()) {
+      response.setAlert("Quentity is alredy Return for this Sale order.");
+      return;
+    }
+
+    Warehouse warehouse = saleOrder.getWarehouse();
+
+    for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+      Product product = saleOrderLine.getProduct();
+      BigDecimal productQty = saleOrderLine.getQty();
+
+      for (ProductInventoryLine productInventoryLine : product.getInventoryLineList()) {
+        if (productInventoryLine.getWarehouse() != null
+            && productInventoryLine.getWarehouse() == warehouse) {
+
+          if (saleOrder.getQtyIsReserved()) {
+            productInventoryLine.setOnGoingOrderQty(
+                productInventoryLine.getOnGoingOrderQty().subtract(productQty));
+          }
+
+          if (saleOrder.getQtyIsRelease()) {
+            productInventoryLine.setTotalQty(productInventoryLine.getTotalQty().add(productQty));
+          }
+          Beans.get(ProductInventoryLineRepository.class).save(productInventoryLine);
+          break;
+        }
+      }
+    }
+    response.setValue("qtyIsReserved", false);
+    response.setValue("qtyIsRelease", false);
+    response.setValue("qtyIsReturn", true);
   }
 }

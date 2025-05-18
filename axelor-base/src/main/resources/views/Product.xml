@@ -518,6 +518,11 @@
           <field name="countryOfOrigin" showIf="usedInDEB"/>
         </panel>
       </panel>
+      <panel name="inventoryPanel" title="Inventory">
+        <panel-related field="inventoryLineList"
+          form-view="base-product-inventory-line-form" grid-view="base-product-inventory-line-grid"
+          colSpan="12"/>
+      </panel>
     </panel-tabs>
     <panel name="attrsPanel">
       <field name="attrs" colSpan="12"/>

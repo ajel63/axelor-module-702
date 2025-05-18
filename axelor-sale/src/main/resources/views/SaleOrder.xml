@@ -62,7 +62,7 @@
       </menu>
     </menubar>
     <hilite background="warning"
-      if="(saleOrderSeq != null) &amp;&amp; (totalPaidAmount &lt; inTaxTotal)"/>
+      if="(saleOrderSeq != null) &amp;&amp; ((inTaxTotal - totalPaidAmount) &gt; 0)"/>
     <field name="endOfValidityDate" hidden="true"/>
     <field name="saleOrderSeq" width="120"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
@@ -504,6 +504,7 @@
         </panel>
         <panel name="orderTypePanel" colSpan="12">
           <field name="zDentalOrderTypeSelect" colSpan="3"/>
+          <field name="warehouse" colSpan="3"/>
         </panel>
       </panel>
 
@@ -629,34 +630,42 @@
       </panel>
       <panel name="invoicingPanel" title="Invoicing">
 
+        <panel colSpan="12">
+          <panel name="stripePaymentPanel" title="Stripe Payments" colSpan="6">
+            <button onClick="save,action-sale-order-get-stripe-payment-record,save"
+              name="getPaymentRecordBtn" title="Get Payment Record" colSpan="6"/>
+            <field name="stripePaidAmount" colSpan="6" readonly="true"/>
+            <panel-related field="stripePayment" name="stripePaymentPanel"
+              grid-view="stripe-payment-line-grid" colSpan="12" title="Payments"
+              form-view="stripe-payment-line-form"/>
+          </panel>
 
-        <panel name="stripePaymentPanel" title="Stripe Payments" colSpan="6">
-          <button onClick="save,action-sale-order-get-stripe-payment-record,save"
-            name="getPaymentRecordBtn" title="Get Payment Record" colSpan="6"/>
-          <field name="stripePaidAmount" colSpan="6"/>
-          <panel-related field="stripePayment" name="stripePaymentPanel"
-            grid-view="stripe-payment-line-grid" colSpan="12" title="Payments"
-            form-view="stripe-payment-line-form"/>
-
-          <button onClick="save,action-sale-order-get-stripe-refund-record,save"
-            name="getRefundRecordBtn" title="Get Refund Record" colSpan="6"/>
-          <field name="stripeRefundedAmount" colSpan="6"/>
-          <panel-related field="stripeRefund" name="stripeRefundPanel"
-            grid-view="stripe-refund-line-grid" colSpan="12" title="Refund"
-            form-view="stripe-refund-line-form"/>
+          <panel name="otherPaymentPanel" title="Other Payments" colSpan="6">
+            <field name="paidAmount" colSpan="6" readonly="true"/>
+            <panel-related field="paymentRegisterLine" name="paymentRefundLinePanel"
+              grid-view="payment-register-line-grid" colSpan="12" title="Payments"
+              form-view="payment-register-line-form"
+              onChange="action-sale-order-method-sum-total-register-payment,save"/>
+          </panel>
         </panel>
 
-        <panel name="otherPaymentPanel" title="Other Payments" colSpan="6">
-          <field name="paidAmount" colSpan="6"/>
-          <panel-related field="paymentRegisterLine" name="paymentRefundLinePanel"
-            grid-view="payment-register-line-grid" colSpan="12" title="Payments"
-            form-view="payment-register-line-form"
-            onChange="action-sale-order-method-sum-total-register-payment"/>
+        <panel colSpan="12">
+          <panel name="stripePaymentRefundPanel" colSpan="6">
+            <button onClick="save,action-sale-order-get-stripe-refund-record,save"
+              name="getRefundRecordBtn" title="Get Refund Record" colSpan="6"/>
+            <field name="stripeRefundedAmount" colSpan="6" readonly="true"/>
+            <panel-related field="stripeRefund" name="stripeRefundPanel"
+              grid-view="stripe-refund-line-grid" colSpan="12" title="Refund"
+              form-view="stripe-refund-line-form"/>
+          </panel>
 
-          <field name="refundedAmount" colSpan="6"/>
-          <panel-related field="paymentRefundLine" name="paymentRefundLinePanel"
-            grid-view="payment-refund-line-grid" colSpan="12" title="Refund"
-            form-view="payment-refund-line-form"/>
+          <panel name="otherPaymentRefundPanel" colSpan="6">
+            <field name="refundedAmount" colSpan="6" readonly="true"/>
+            <panel-related field="paymentRefundLine" name="paymentRefundLinePanel"
+              grid-view="payment-refund-line-grid" colSpan="12" title="Refund"
+              form-view="payment-refund-line-form"
+              onChange="action-sale-order-method-sum-total-register-payment,save"/>
+          </panel>
         </panel>
 
 
@@ -673,7 +682,7 @@
         </panel>
       </panel>
       <panel if="__config__.app.isApp('production')" if-module="axelor-production"
-        name="productionPanel" title="Production" colSpan="12">
+        name="productionPanel" title="Production" colSpan="12" hidden="true">
         <panel name="productionNotePanel" title="Production note" colSpan="12">
           <field name="productionNote" showTitle="false" colSpan="12" widget="Html"/>
         </panel>
@@ -682,7 +691,7 @@
           showIf="statusSelect == 3 || statusSelect == 4"/>
       </panel>
 
-      <panel name="businessProjectPanel" title="Business project"
+      <panel name="businessProjectPanel" title="Business project" hidden="true"
         if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder()"
         if-module="axelor-business-project">
         <field name="$_projectGeneratorType" title="Type of project's elements generated"
@@ -713,7 +722,7 @@
 
       <panel
         if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getAllowTimetableInvoicing()"
-        if-module="axelor-supplychain" name="timetablePanel" title="Timetable"
+        if-module="axelor-supplychain" name="timetablePanel" title="Timetable" hidden="true"
         onTabSelect="action-sale-order-attrs-readonly-timetable">
         <field name="expectedRealisationDate" colSpan="12" width="50%"/>
         <label name="orLabel" title="OR" colSpan="12"/>
@@ -749,7 +758,7 @@
         if-module="axelor-supplychain" view="incl-sale-order-subscrption-form"/>
       <panel-dashlet if="__config__.app.isApp('supplychain')"
         name="generatedPurchaseOrderPanel" title="Generated purchase orders"
-        action="action-sale-order-view-show-generated-po" hideIf="statusSelect &lt;= 2"/>
+        action="action-sale-order-view-show-generated-po" hideIf="true"/>
 
       <panel name="shippPanel" title="Shipping">
 
@@ -794,6 +803,21 @@
           name="btnPrintAllReceipts" title="Print All Receipts"/>
         <panel-related field="shipment" name="shipment" title="Shipment"
           grid-view="shipment-grid" form-view="shipment-form" colSpan="12"/>
+      </panel>
+
+      <panel name="inventoryPanel" title="Inventory" colSpan="12">
+        <button onClick="save,action-sale-order-reserve-qty-inventory-on-product,save"
+          name="reserveQtyBtn" title="Reserve Qty" colSpan="3"/>
+        <spacer colSpan="1"/>
+        <button onClick="save,action-sale-order-release-qty-inventory-on-product,save"
+          name="releaseQtyBtn" title="Release Qty" colSpan="3"/>
+        <spacer colSpan="1"/>
+        <button onClick="save,action-sale-order-return-qty-inventory-on-product,save"
+          name="returnQtyBtn" title="Return Qty" colSpan="3"/>
+        <spacer colSpan="1"/>
+        <field name="qtyIsReserved" colSpan="4"/>
+        <field name="qtyIsRelease" colSpan="4"/>
+        <field name="qtyIsReturn" colSpan="4"/>
       </panel>
 
     </panel-tabs>
@@ -2575,4 +2599,15 @@
     <call class="com.axelor.apps.sale.web.SaleOrderController" method="printAllReceipt"/>
   </action-method>
 
+  <action-method name="action-sale-order-reserve-qty-inventory-on-product">
+    <call class="com.axelor.apps.sale.web.SaleOrderController" method="reserveProductQty"/>
+  </action-method>
+
+  <action-method name="action-sale-order-release-qty-inventory-on-product">
+    <call class="com.axelor.apps.sale.web.SaleOrderController" method="releaseProductQty"/>
+  </action-method>
+
+  <action-method name="action-sale-order-return-qty-inventory-on-product">
+    <call class="com.axelor.apps.sale.web.SaleOrderController" method="returnProductQty"/>
+  </action-method>
 </object-views>

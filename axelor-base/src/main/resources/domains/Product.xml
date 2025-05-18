@@ -138,6 +138,9 @@
     <one-to-many name="productCompanyList" ref="com.axelor.apps.base.db.ProductCompany"
       title="Products per companies" mappedBy="product"/>
 
+    <one-to-many name="inventoryLineList"
+      ref="com.axelor.apps.base.db.ProductInventoryLine" mappedBy="product"/>
+
     <string name="dtype" insertable="false" updatable="false"/>
 
     <!-- Json field -->

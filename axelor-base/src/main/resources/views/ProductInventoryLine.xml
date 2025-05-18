@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="base-product-inventory-line-grid" title="Product Inventory"
+    model="com.axelor.apps.base.db.ProductInventoryLine">
+    <field name="warehouse"/>
+    <field name="totalQty"/>
+    <field name="onGoingOrderQty"/>
+  </grid>
+
+  <form name="base-product-inventory-line-form" title="Product Inventory"
+    model="com.axelor.apps.base.db.ProductInventoryLine" onLoad="">
+    <panel name="mainPanel">
+      <field name="warehouse" form-view="base-product-warehouse-form"
+        grid-view="base-product-warehouse-grid" canNew="true"/>
+      <field name="totalQty"/>
+      <field name="onGoingOrderQty"/>
+    </panel>
+  </form>
+
+</object-views>
