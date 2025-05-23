@@ -837,7 +837,7 @@
         showIf="statusSelect == 3"
         prompt="Warning, a completed order can't be changed anymore, do you want to continue?"
         colSpan="12"
-        onClick="save,action-sale-order-method-complete-sale-order,action-sale-order-method-status-update-on-woocom"/>
+        onClick="save,action-sale-order-method-complete-sale-order,action-sale-order-release-qty-inventory-on-product,save,action-sale-order-method-status-update-on-woocom"/>
       <button if="__config__.app.getApp('sale')?.getManageSaleOrderVersion()"
         name="newVersionBtn" title="New version" showIf="statusSelect == 2" colSpan="12"
         onClick="save,action-sale-record-newVersion,save"/>
@@ -889,7 +889,7 @@
         if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.allowCompleteManuallySaleOrder"
         name="backToOrderConfirmBtn" title="Back to confirmed order" showIf="statusSelect == 4"
         if-module="axelor-supplychain"
-        onClick="save,action-sale-order-method-set-status-to-confirmed,action-sale-order-method-status-update-on-woocom"/>
+        onClick="save,action-sale-order-method-set-status-to-confirmed,action-sale-order-reserve-qty-inventory-on-product,save,action-sale-order-method-status-update-on-woocom"/>
       <field name="message" hidden="true" type="string"/>
       <field name="amountInvoiced" hidden="true"/>
       <button if="__config__.app.getApp('sale')?.getEnableConfigurator()"
@@ -1688,6 +1688,8 @@
     <action name="action-sale-order-method-confirm"/>
     <action name="action-sale-order-method-notify-stock-move-created"
       if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.customerStockMoveGenerationAuto "/>
+    <action name="action-sale-order-reserve-qty-inventory-on-product"/>
+    <action name="save"/>
     <action name="action-sale-order-method-status-update-on-woocom"/>
   </action-group>
 
@@ -2341,6 +2343,7 @@
           &amp;&amp; (
           (stockLocation != null &amp;&amp; deliveryAddress?.addressL7Country?.alpha2Code != stockLocation?.address?.addressL7Country?.alpha2Code)
           || (stockLocation == null &amp;&amp; deliveryAddress?.addressL7Country?.alpha2Code != company.address?.addressL7Country?.alpha2Code))"/>
+    <error message="Please select the Warehouse on Saleorder." if="warehouse == null"/>
   </action-validate>
 
   <action-record name="action-sale-record-update-info-company"

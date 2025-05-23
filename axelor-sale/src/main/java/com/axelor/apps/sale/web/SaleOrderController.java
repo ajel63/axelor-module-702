@@ -254,6 +254,11 @@ public class SaleOrderController {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
     saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
 
+    if (saleOrder.getWarehouse() == null) {
+      response.setError("Please select the Warehouse on Saleorder.");
+      return;
+    }
+
     try {
       Beans.get(SaleOrderWorkflowService.class).completeSaleOrder(saleOrder);
     } catch (Exception e) {
@@ -1018,7 +1023,6 @@ public class SaleOrderController {
     }
 
     if (saleOrder.getQtyIsReserved()) {
-      response.setAlert("Quentity is alredy reserved for this Sale order.");
       return;
     }
 
@@ -1057,7 +1061,6 @@ public class SaleOrderController {
     }
 
     if (saleOrder.getQtyIsRelease()) {
-      response.setAlert("Quentity is alredy released for this Sale order.");
       return;
     }
 
@@ -1096,7 +1099,6 @@ public class SaleOrderController {
     }
 
     if (saleOrder.getQtyIsReturn()) {
-      response.setAlert("Quentity is alredy Return for this Sale order.");
       return;
     }
 
