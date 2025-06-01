@@ -5,6 +5,7 @@
 
   <grid name="base-product-inventory-line-grid" title="Product Inventory"
     model="com.axelor.apps.base.db.ProductInventoryLine">
+    <field name="product"/>
     <field name="warehouse"/>
     <field name="totalQty"/>
     <field name="onGoingOrderQty"/>

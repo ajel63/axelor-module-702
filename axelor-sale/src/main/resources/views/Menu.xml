@@ -64,6 +64,15 @@
     <context name="_fromSale" expr="eval:true"/>
   </action-view>
 
+  <menuitem name="sc-root-sale-products-inventory" parent="sc-root-sale" order="450"
+    title="Inventory" action="sc.root.sale.products.inventory"/>
+
+  <action-view name="sc.root.sale.products.inventory" title="Inventory"
+    model="com.axelor.apps.base.db.ProductInventoryLine">
+    <view type="grid" name="base-product-inventory-line-grid"/>
+    <view type="form" name="base-product-inventory-line-form"/>
+  </action-view>
+
   <menuitem name="sc-root-sale-quotations" parent="sc-root-sale" order="500"
     title="Sale quotations" action="sc.root.sale.quotations"/>
 

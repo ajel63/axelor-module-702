@@ -21,6 +21,7 @@ package com.axelor.apps.base.web;
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.ProductInventoryLine;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
@@ -43,6 +44,7 @@ import com.axelor.rpc.Criteria;
 import com.google.common.base.Joiner;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -194,5 +196,21 @@ public class ProductController {
       }
     }
     return displayedProductIdList;
+  }
+
+  public void calculateTotalProductQty(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Product product = request.getContext().asType(Product.class);
+
+    BigDecimal totalQty = new BigDecimal(0);
+    BigDecimal onGoingQty = new BigDecimal(0);
+
+    for (ProductInventoryLine productInventoryLine : product.getInventoryLineList()) {
+      totalQty = totalQty.add(productInventoryLine.getTotalQty());
+      onGoingQty = onGoingQty.add(productInventoryLine.getOnGoingOrderQty());
+    }
+
+    response.setValue("$productTotalQtyBtn", totalQty);
+    response.setValue("$productOnGoingQtyBtn", onGoingQty);
   }
 }
