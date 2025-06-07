@@ -1032,9 +1032,9 @@ public class SaleOrderController {
       Product product = saleOrderLine.getProduct();
       BigDecimal productQty = saleOrderLine.getQty();
       BigDecimal totalSingleUnit = saleOrderLine.getTotalSingleUnit();
-      
+
       if (totalSingleUnit.compareTo(BigDecimal.ZERO) > 0) {
-    	  productQty = productQty.multiply(totalSingleUnit);
+        productQty = productQty.multiply(totalSingleUnit);
       }
 
       for (ProductInventoryLine productInventoryLine : product.getInventoryLineList()) {
@@ -1075,9 +1075,9 @@ public class SaleOrderController {
       Product product = saleOrderLine.getProduct();
       BigDecimal productQty = saleOrderLine.getQty();
       BigDecimal totalSingleUnit = saleOrderLine.getTotalSingleUnit();
-      
+
       if (totalSingleUnit.compareTo(BigDecimal.ZERO) > 0) {
-    	  productQty = productQty.multiply(totalSingleUnit);
+        productQty = productQty.multiply(totalSingleUnit);
       }
 
       for (ProductInventoryLine productInventoryLine : product.getInventoryLineList()) {
@@ -1118,9 +1118,9 @@ public class SaleOrderController {
       Product product = saleOrderLine.getProduct();
       BigDecimal productQty = saleOrderLine.getQty();
       BigDecimal totalSingleUnit = saleOrderLine.getTotalSingleUnit();
-      
+
       if (totalSingleUnit.compareTo(BigDecimal.ZERO) > 0) {
-    	  productQty = productQty.multiply(totalSingleUnit);
+        productQty = productQty.multiply(totalSingleUnit);
       }
 
       for (ProductInventoryLine productInventoryLine : product.getInventoryLineList()) {
