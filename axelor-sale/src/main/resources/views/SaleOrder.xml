@@ -815,9 +815,9 @@
         <button onClick="save,action-sale-order-return-qty-inventory-on-product,save"
           name="returnQtyBtn" title="Return Qty" colSpan="3"/>
         <spacer colSpan="1"/>
-        <field name="qtyIsReserved" colSpan="4"/>
-        <field name="qtyIsRelease" colSpan="4"/>
-        <field name="qtyIsReturn" colSpan="4"/>
+        <field name="qtyIsReserved" colSpan="4" readonly="true"/>
+        <field name="qtyIsRelease" colSpan="4" readonly="true"/>
+        <field name="qtyIsReturn" colSpan="4" readonly="true"/>
       </panel>
 
     </panel-tabs>
