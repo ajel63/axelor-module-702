@@ -1031,7 +1031,7 @@ public class SaleOrderController {
     for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
       Product product = saleOrderLine.getProduct();
       BigDecimal productQty = saleOrderLine.getQty();
-      BigDecimal totalSingleUnit = saleOrderLine.getTotalSingleUnit();
+      BigDecimal totalSingleUnit = saleOrderLine.getUnit().getQty();
 
       if (totalSingleUnit.compareTo(BigDecimal.ZERO) > 0) {
         productQty = productQty.multiply(totalSingleUnit);
@@ -1074,7 +1074,7 @@ public class SaleOrderController {
     for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
       Product product = saleOrderLine.getProduct();
       BigDecimal productQty = saleOrderLine.getQty();
-      BigDecimal totalSingleUnit = saleOrderLine.getTotalSingleUnit();
+      BigDecimal totalSingleUnit = saleOrderLine.getUnit().getQty();
 
       if (totalSingleUnit.compareTo(BigDecimal.ZERO) > 0) {
         productQty = productQty.multiply(totalSingleUnit);
@@ -1117,7 +1117,7 @@ public class SaleOrderController {
     for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
       Product product = saleOrderLine.getProduct();
       BigDecimal productQty = saleOrderLine.getQty();
-      BigDecimal totalSingleUnit = saleOrderLine.getTotalSingleUnit();
+      BigDecimal totalSingleUnit = saleOrderLine.getUnit().getQty();
 
       if (totalSingleUnit.compareTo(BigDecimal.ZERO) > 0) {
         productQty = productQty.multiply(totalSingleUnit);
